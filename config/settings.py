@@ -147,6 +147,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     # 'PAGE_SIZE': 100
 # }
 
-
-def self():
-    ...
