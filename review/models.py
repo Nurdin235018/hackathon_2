@@ -1,5 +1,4 @@
-from django.db import models
-
+from account.admin import User
 from account.admin import User
 
 
