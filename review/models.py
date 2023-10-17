@@ -1,4 +1,5 @@
 from account.admin import User
+from account.admin import User
 
 
 class Comment(models.Model):
@@ -11,3 +12,4 @@ class Comment(models.Model):
 class Like(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='Like')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+
