@@ -1,7 +1,6 @@
 from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
-
-from review.models import Like, Comment
+from review.models import Rating, Comment
 
 
 class CommentSerializer(ModelSerializer):
@@ -12,11 +11,11 @@ class CommentSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class LikeSerializer(ModelSerializer):
+class RatingSerializer(ModelSerializer):
     author = ReadOnlyField(source='author.name')
 
     class Meta:
-        model = Like
+        model = Rating
         fields = '__all__'
 
     def create(self, validated_data):
