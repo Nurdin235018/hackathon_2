@@ -3,6 +3,7 @@ from .models import Tickets, Tag, Category
 
 
 class TicketsSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.name')
     class Meta:
         model = Tickets
         fields = '__all__'
