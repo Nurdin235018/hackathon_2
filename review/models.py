@@ -10,6 +10,14 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class Like(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
+    post = models.ForeignKey(Tickets, on_delete=models.CASCADE, related_name='likes')
+
+    def __str__(self):
+        return f'{self.author.name} liked {self.post.title}'
+
+
 class Rating(models.Model):
     rating = models.PositiveSmallIntegerField()
     post = models.ForeignKey(Tickets, on_delete=models.CASCADE, related_name='ratings')
