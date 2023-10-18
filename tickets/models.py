@@ -29,7 +29,8 @@ class Tag(models.Model):
 class Tickets(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tickets', verbose_name='Author')
     body = models.TextField()
-    title = models.CharField(max_length=40)
+    where_from = models.CharField(max_length=40)
+    where_to = models.CharField(max_length=40)
     image = models.ImageField(upload_to='tickets/', blank=True)
     tags = models.ManyToManyField(Tag, related_name='tickets', blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='tickets')
