@@ -4,6 +4,7 @@ pillow
 psycopg2_binary 
 python-decouple
 drf-yasg
+pyTelegramBotAPI
 
 
 asgiref==3.7.2
