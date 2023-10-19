@@ -2,8 +2,7 @@ django
 djangorestframework 
 pillow 
 psycopg2_binary 
-python-decouple 
-python-slugify
+python-decouple
 drf-yasg
 
 

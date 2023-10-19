@@ -1,20 +1,15 @@
 from rest_framework import serializers
-from .models import Tickets, Tag, Category
+from .models import Tickets, Category, Flight
+from review.serializers import *
+from django.db.models import Avg
 
 
 class TicketsSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.name')
+
     class Meta:
         model = Tickets
         fields = '__all__'
-
-    '''Dont know for what is this'''
-    def create(self, validated_data):
-        user = self.context.get('request').user
-        tags = validated_data.pop('tags', [])
-        ticket = self.Meta.model.objects.create(author=user, **validated_data)
-        ticket.tags.add(*tags)
-        return ticket
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -24,8 +19,15 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TagSerializer(serializers.ModelSerializer):
+class FlightSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Tag
+        model = Flight
         fields = '__all__'
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['comments'] = CommentSerializer(instance.comments.all(), many=True).data
+        rep['rating'] = instance.ratings.aggregate(Avg('rating'))['rating__avg']
+        rep['likes'] = instance.likes.count()
+        return rep

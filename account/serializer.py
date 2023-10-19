@@ -9,6 +9,7 @@ User = get_user_model()
 
 '''Make a ModelSerializer'''
 
+
 class RegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(min_length=5, required=True)

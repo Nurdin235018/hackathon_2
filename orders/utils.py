@@ -1,10 +1,15 @@
 from django.core.mail import send_mail
 
 
-def send_order_confirm(email, code):
-    send_mail('Confirm your order', from_email='test@gmail.com', recipient_list=[email])
-    # message = 'This is a test email sent from Django with attachments.'
+def send_confirmation_email(order, email):
+    subject = 'Flight Order Confirmation'
+    message = f'Dear {order.customer_name},\n\n' \
+              f'Thank you for placing an order for a flight with us. Your order details are as follows:\n' \
+              f'Flight: {order.ticket.flight}\n' \
+              f'Total Price: {order.total_price}\n\n' \
+              f'Place: {order.place}\n\n' \
+              f'We appreciate your business. Safe travels!'
+    from_email = 'test@gmail.com'
+    to_email = [email]
 
-    # email = EmailMessage(subject, message, from_email, recipient_list)
-    # email.attach_file('path/to/attachment.pdf')  # Attach a file
-    # email.send()
+    send_mail(subject, message, from_email, to_email, fail_silently=False)
