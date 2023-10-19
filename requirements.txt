@@ -5,6 +5,7 @@ psycopg2_binary
 python-decouple 
 python-slugify
 drf-yasg
+pyTelegramBotAPI
 
 
 asgiref==3.7.2
