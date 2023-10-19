@@ -24,12 +24,12 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='JunPypack',
+        title='AviaSales',
         default_version='v1',
-        description='JunPypack swagger',
+        description='AviaSales swagger',
         terms_of_service='https://www.google.com/policies/terms/',
         contact=openapi.Contact(email='contack@snippets.local'),
-        license=openapi.License(name='BSD License')
+        license=openapi.License(name='BSD License'),
     ),
     public=True,
     permission_classes=[permissions.AllowAny]
@@ -38,7 +38,9 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/docs/', schema_view.with_ui()),
+    path('swagger/', schema_view.with_ui()),
+    path('api/v1/', include('orders.urls')),
     path('api/v1/', include('tickets.urls')),
-    path('api/v1/account/', include('account.urls'))
+    path('api/v1/', include('review.urls')),
+    path('api/v1/account/', include('account.urls')),
 ]

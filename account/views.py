@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from .permissions import IsActivePermission
 from rest_framework.permissions import IsAuthenticated
 
+'''Tried to make a ViewSet'''
 
 class RegistrationView(APIView):
     def post(self, request):

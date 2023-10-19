@@ -10,6 +10,7 @@ class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+
 class RatingViewSet(ModelViewSet):
     queryset = Rating.objects.all()
     serializer_class = RatingSerializer
