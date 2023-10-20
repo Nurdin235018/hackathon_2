@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from tickets.models import Tickets
 from .models import Order
 from .utils import send_confirmation_email
+import logging
 
+logger = logging.getLogger(__name__)
 
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all()

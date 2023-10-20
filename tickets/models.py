@@ -24,6 +24,7 @@ class Flight(models.Model):
 class Tickets(models.Model):
     flight = models.ForeignKey(Flight, on_delete=models.CASCADE, related_name='tickets', verbose_name='Airline')
     place = models.PositiveIntegerField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='tickets', verbose_name='Class')
     luggage = models.CharField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
