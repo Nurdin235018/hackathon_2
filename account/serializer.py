@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
-from .utils import send_code
 from django.core.mail import send_mail
+from .utils import send_code, send_activation_code
+
 
 
 User = get_user_model()
@@ -10,21 +11,24 @@ User = get_user_model()
 '''Make a ModelSerializer'''
 
 
-class RegistrationSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-    password = serializers.CharField(min_length=5, required=True)
+class RegistrationSerializer(serializers.ModelSerializer):
+
     password_confirm = serializers.CharField(min_length=5, required=True)
-    name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=False)
+
+    class Meta:
+        model = User
+        fields = '__all__'
 
     def validate_email(self, email):
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError('User with this email already exist')
         return email
 
+
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         user.create_activation_code()
+        # send_activation_code(user.email, user.activation_code)
         send_code(user.email, user.activation_code)
         return user
 
@@ -73,10 +77,7 @@ class LoginSerializer(serializers.Serializer):
         email = attrs.get('email')
         password = attrs.get('password')
         request = self.context.get('request')
-        user = authenticate(username=email, password=password, request=request)
-        print('==================')
-        print(user)
-        print('==================')
+        user = authenticate(email=email, password=password, request=request)
         if not user:
             raise serializers.ValidationError(
                 'Email or Password is wrong'
@@ -124,6 +125,7 @@ class ForgotPasswordSerializer(serializers.Serializer):
             'test@gmail.com',
             [user.email]
         )
+
 
 class ForgotPasswordCompleteSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)

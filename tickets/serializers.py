@@ -20,6 +20,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class FlightSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source='author.name')
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Flight
@@ -31,3 +33,9 @@ class FlightSerializer(serializers.ModelSerializer):
         rep['rating'] = instance.ratings.aggregate(Avg('rating'))['rating__avg']
         rep['likes'] = instance.likes.count()
         return rep
+
+
+class RecommendationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tickets
+        fields = '__all__'

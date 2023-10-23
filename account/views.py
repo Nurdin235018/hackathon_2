@@ -1,12 +1,18 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 from .serializer import RegistrationSerializer, ActivationSerializer, LoginSerializer, ChangePasswordSerializer, ForgotPasswordSerializer, ForgotPasswordCompleteSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from .permissions import IsActivePermission
 from rest_framework.permissions import IsAuthenticated
 
-'''Tried to make a ViewSet'''
+
+'''Tried to Makefile a ViewSet'''
+
+User = get_user_model()
+
 
 class RegistrationView(APIView):
     def post(self, request):
@@ -17,6 +23,13 @@ class RegistrationView(APIView):
 
 
 class ActivationView(APIView):
+    # def post(self, request, activation_code):
+    #     user = get_object_or_404(User, activation_code=activation_code)
+    #     user.is_active = True
+    #     user.activation_code = ''
+    #     user.save(update_fields=['is_active', 'activation_code'])
+    #     return Response('Успешно', status=200)
+
     def post(self, request):
         data = request.data
         serializer = ActivationSerializer(data=data)

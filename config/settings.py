@@ -9,9 +9,13 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os.path
+import warnings
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
+import os
+from django.core.paginator import UnorderedObjectListWarning
+import logging
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,9 +31,10 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL="account.User" #!!!!
+AUTH_USER_MODEL="account.User"
 
 # Application definition
 
@@ -43,7 +48,9 @@ INSTALLED_APPS = [
     #libs
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'drf_yasg',
+    'corsheaders',
     #apps
     'account',
     'review',
@@ -121,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bishkek'
 
 USE_I18N = True
 
@@ -153,29 +160,64 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
+
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'detailINFO': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "main_format": {
+            "format": "{asctime} - {levelname} - {module} - {filename} - {message}",
+            "style": "{",
         },
     },
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'info.log',
-            'formatter': 'detailINFO',
+    "handlers": {
+        "file": {
+            "class": "logging.FileHandler",
+            "formatter": "main_format",
+            "filename": "log.log",
+            "mode": "w",  # Задаем режим записи, чтобы перезаписывать файл при каждом новом запуске
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "main_format",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
         },
     },
 }
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': '127.0.0.1:6379',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static/'
+
+warnings.filterwarnings("ignore", message="Pagination may yield inconsistent results", category=UnorderedObjectListWarning)
+
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'

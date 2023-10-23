@@ -1,6 +1,7 @@
 from rest_framework.fields import ReadOnlyField
 from rest_framework.serializers import ModelSerializer
-from review.models import Rating, Comment
+from rest_framework import serializers
+from review.models import Rating, Comment, Favourites
 
 
 class CommentSerializer(ModelSerializer):
@@ -9,6 +10,11 @@ class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        comment = self.Meta.model.objects.create(author=user, **validated_data)
+        return comment
 
 
 class RatingSerializer(ModelSerializer):
@@ -20,6 +26,27 @@ class RatingSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = self.context.get('request').user
-        like = self.Meta.model.objects.create(author=user, **validated_data)
-        return like
+        rating = self.Meta.model.objects.create(author=user, **validated_data)
+        return rating
+
+
+class FavouritesSerializer(ModelSerializer):
+    author = ReadOnlyField(source='author.name')
+    class Meta:
+        model = Favourites
+        fields = '__all__'
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        favourite = self.Meta.model.objects.create(author=user, **validated_data)
+        return favourite
+
+    def validate(self, attrs):
+        flight = attrs.get('flight')
+        user = self.context.get('request').user
+        if self.Meta.model.objects.filter(flight=flight, author=user).exists():
+            raise serializers.ValidationError(
+                'You already liked it'
+            )
+        return attrs
 
